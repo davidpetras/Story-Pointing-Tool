@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Story Pointing Tool</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin: 30px; }
+    input, button { margin: 5px; padding: 10px; font-size: 16px; }
+    pre { text-align: left; max-width: 600px; margin: 20px auto; }
+  </style>
+</head>
+<body>
+  <h1>Remote Story Pointing</h1>
+  <input id="name" placeholder="Name (optional)" /><br/>
+  <input id="story" placeholder="Story ID" /><br/>
+  <div>
+    <button onclick="vote(1)">1</button>
+    <button onclick="vote(2)">2</button>
+    <button onclick="vote(3)">3</button>
+    <button onclick="vote(5)">5</button>
+    <button onclick="vote(8)">8</button>
+  </div>
+  <button onclick="revealVotes()">Reveal Votes</button>
+  <button onclick="clearVotes()">Clear Votes</button>
+  <pre id="results">No votes yet.</pre>
+
+  <script>
+    async function vote(pt) {
+      const name = document.getElementById('name').value;
+      const story = document.getElementById('story').value.trim();
+      if (!story) return alert("Please enter a Story ID");
+      await fetch("/vote", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ name, story, point: pt })
+      });
+      alert("Vote recorded!");
+    }
+
+    async function revealVotes() {
+      const res = await fetch("/votes");
+      const data = await res.json();
+      document.getElementById("results").textContent =
+        data.map(v => `${v.name} → ${v.point} on ${v.story}`).join("\n")
+        || "No votes yet.";
+    }
+
+    async function clearVotes() {
+      await fetch("/clear", { method: "POST" });
+      document.getElementById("results").textContent = "Votes cleared!";
+    }
+  </script>
+</body>
+</html>
