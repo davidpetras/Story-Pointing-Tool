@@ -11,7 +11,7 @@
 </head>
 <body>
   <h1>Remote Story Pointing</h1>
-  <input id="name" placeholder="Name (required)" /><br/>
+  <input id="name" placeholder="Name (required)" required /><br/>
   <input id="story" placeholder="Story ID (optional)" /><br/>
   <div>
     <button onclick="vote(1)">1</button>
@@ -28,7 +28,7 @@
     async function vote(pt) {
       const name = document.getElementById('name').value.trim();
       const story = document.getElementById('story').value.trim();
-      if (!name) return alert("Please enter your name");
+      if (!name) return alert("Please enter your name.");
       await fetch("/vote", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
