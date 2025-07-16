@@ -7,8 +7,8 @@ app.use(express.json());
 
 app.post("/vote", (req, res) => {
   const { name, story, point } = req.body;
-  if (!story || !point) return res.status(400).send("invalid vote");
-  votes.push({ name: name || "Anonymous", story, point });
+  if (!name || !point) return res.status(400).send("Name and point are required");
+  votes.push({ name, story: story || "(no story)", point });
   res.sendStatus(200);
 });
 
